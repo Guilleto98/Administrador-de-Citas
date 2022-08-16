@@ -12,7 +12,41 @@ const formulario = document.querySelector('#nueva-cita');
 
 const contenedorCitas = document.querySelector('#citas');
 
+// Clases
+class Citas{
+    constructor(){
+        this.citas = [];
+    }
+}
 
+class UI{
+    imprimirAlerta(mensaje, tipo){
+        // Crear el div
+        const divMensaje = document.createElement('div');
+        divMensaje.classList.add('text-center', 'alert', 'd-block', 'col-12');
+
+        // Agregar clase en base al tipo de error
+        if(tipo === 'error'){
+            divMensaje.classList.add('alert-danger');
+        }else{
+            divMensaje.classList.add('alert-success');
+        }
+
+        // Mensaje de error
+        divMensaje.textContent = mensaje;
+
+        // Agregar al DOM
+        document.querySelector('#contenido').insertBefore(divMensaje, document.querySelector('.agregar-cita'));
+
+        // Quitar el mensaje de error
+        setTimeout(()=>{
+            divMensaje.remove();
+        }, 2500);
+    }
+}
+
+const ui = new UI();
+const administrarCitas = new Citas();
 // Event Listeners
 
 eventListeners();
@@ -23,6 +57,8 @@ function eventListeners(){
     fechaInput.addEventListener('input', datosCita);
     horaInput.addEventListener('input', datosCita);
     sintomasInput.addEventListener('input', datosCita);
+
+    formulario.addEventListener('submit', nuevaCita);
 }
 
 // Obj principal con informacion de la cita
@@ -37,5 +73,21 @@ const citaObj = {
 
 function datosCita(e){
         citaObj[e.target.name] = e.target.value;
+}
+
+
+// Valida y agrega una nueva cita a la clase de citas
+function nuevaCita(e){
+    e.preventDefault();
+
+    // Extraer la informacion del objeto de cita
+    const { mascota, propietario, telefono, fecha, hora, sintomas } = citaObj;
+
+    // Validar que los campos no esten vacios
+    if(mascota === '' || propietario === '' || telefono === '' || fecha === '' || hora === '' || sintomas === ''){
+        ui.imprimirAlerta('Todos los campos son obligatorios', 'error');
+
+        return;
+    }
 }
  
